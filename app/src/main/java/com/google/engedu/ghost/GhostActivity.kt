@@ -14,8 +14,10 @@
  */
 package com.google.engedu.ghost
 
+import android.icu.text.UnicodeMatcher
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
@@ -24,18 +26,15 @@ import android.widget.TextView
 import java.util.*
 
 class GhostActivity : AppCompatActivity() {
-    private val dictionary: GhostDictionary? = null
+    private var dictionary: GhostDictionary? = null
     private var userTurn = false
     private val random = Random()
+    private var word: String = ""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ghost)
         val assetManager = assets
-        /**
-         *
-         * YOUR CODE GOES HERE
-         *
-         */
+        dictionary = SimpleDictionary(assetManager.open("words.txt"))
         onStart(null)
     }
 
@@ -59,9 +58,9 @@ class GhostActivity : AppCompatActivity() {
      * Handler for the "Reset" button.
      * Randomly determines whether the game starts with a user turn or a computer turn.
      * @param view
-     * @return true
      */
-    fun onStart(view: View?): Boolean {
+    fun onStart(view: View?) {
+        word = ""
         userTurn = random.nextBoolean()
         val text = findViewById<View>(R.id.ghostText) as TextView
         text.text = ""
@@ -72,7 +71,6 @@ class GhostActivity : AppCompatActivity() {
             label.text = COMPUTER_TURN
             computerTurn()
         }
-        return true
     }
 
     private fun computerTurn() {
@@ -89,12 +87,12 @@ class GhostActivity : AppCompatActivity() {
      * @return whether the key stroke was handled.
      */
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        /**
-         *
-         * YOUR CODE GOES HERE
-         *
-         */
-        return super.onKeyUp(keyCode, event)
+        return if(event.unicodeChar in 97..122) {
+            word += event.unicodeChar.toChar()
+//            Log.d("sb", word)
+            findViewById<TextView>(R.id.gameStatus).text = dictionary!!.isWord(word).toString()
+            true
+        } else super.onKeyUp(keyCode, event)
     }
 
     companion object {

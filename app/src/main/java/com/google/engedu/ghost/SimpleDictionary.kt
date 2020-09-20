@@ -14,13 +14,14 @@
  */
 package com.google.engedu.ghost
 
+import android.util.Log
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.util.*
 
 class SimpleDictionary(wordListStream: InputStream?) : GhostDictionary {
-    private val words: ArrayList<String?>
+    private val words: MutableList<String?>
     override fun isWord(word: String): Boolean {
         return words.contains(word)
     }
@@ -35,11 +36,11 @@ class SimpleDictionary(wordListStream: InputStream?) : GhostDictionary {
 
     init {
         val `in` = BufferedReader(InputStreamReader(wordListStream))
-        words = ArrayList()
-        var line: String? = null
+        words = mutableListOf()
+        var line: String?
         while (`in`.readLine().also { line = it } != null) {
             val word = line!!.trim { it <= ' ' }
-            if (word.length >= GhostDictionary.MIN_WORD_LENGTH) words.add(line!!.trim { it <= ' ' })
+            if (word.length >= GhostDictionary.MIN_WORD_LENGTH) words.add(word)
         }
     }
 }

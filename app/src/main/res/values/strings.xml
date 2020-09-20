@@ -3,4 +3,6 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+    <string name="button_challenge">Challenge</string>
+    <string name="button_reset">Start</string>
 </resources>
