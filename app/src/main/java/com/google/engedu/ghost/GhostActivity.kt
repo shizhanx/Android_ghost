@@ -35,7 +35,7 @@ class GhostActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ghost)
         val assetManager = assets
-        dictionary = SimpleDictionary(assetManager.open("words.txt"))
+        dictionary = FastDictionary(assetManager.open("words.txt"))
         text = findViewById(R.id.ghostText)
         label = findViewById(R.id.gameStatus)
         onStart(null)
@@ -88,7 +88,7 @@ class GhostActivity : AppCompatActivity() {
         if (dictionary!!.isWord(word)) {
             label!!.text = "This is a word. You Lose"
         } else {
-            val fullWord = dictionary!!.getGoodWordStartingWith(word)
+            val fullWord = dictionary!!.getAnyWordStartingWith(word)
             if (fullWord == null)
                 label!!.text = "No such word. You Lose"
             else {

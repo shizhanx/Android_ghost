@@ -14,6 +14,7 @@
  */
 package com.google.engedu.ghost
 
+import android.util.Log
 import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
@@ -35,10 +36,10 @@ class FastDictionary(wordListStream: InputStream?) : GhostDictionary {
     init {
         val `in` = BufferedReader(InputStreamReader(wordListStream))
         root = TrieNode()
-        var line: String? = null
+        var line: String?
         while (`in`.readLine().also { line = it } != null) {
             val word = line!!.trim { it <= ' ' }
-            if (word.length >= GhostDictionary.MIN_WORD_LENGTH) root.add(line!!.trim { it <= ' ' })
+            if (word.length >= GhostDictionary.MIN_WORD_LENGTH) root.add(word)
         }
     }
 }

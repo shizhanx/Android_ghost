@@ -17,15 +17,32 @@ package com.google.engedu.ghost
 import java.util.*
 
 class TrieNode {
-    private val children: HashMap<String, TrieNode> = HashMap()
-    private val isWord: Boolean = false
-    fun add(s: String) {}
+    val children: HashMap<Char, TrieNode> = HashMap()
+    private var isWord: Boolean = false
+    fun add(s: String) {
+        if (s.isEmpty()) isWord = true
+        else {
+            children.putIfAbsent(s[0], TrieNode())
+            children[s[0]]!!.add(s.substring(1))
+        }
+    }
+
     fun isWord(s: String): Boolean {
-        return false
+        if (s.isEmpty()) return isWord
+        if (!children.containsKey(s[0])) return false
+        return children.getValue(s[0]).isWord(s.substring(1))
     }
 
     fun getAnyWordStartingWith(s: String): String? {
-        return null
+        if (s.isNotEmpty()) {
+            if (children.containsKey(s[0])){
+                children.getValue(s[0]).getAnyWordStartingWith(s.substring(1)).apply {
+                    return if (this == null) null else s[0] + this
+                }
+            } else return null
+        } else {
+            return if (children.isEmpty()) null else children.keys.random().toString()
+        }
     }
 
     fun getGoodWordStartingWith(s: String): String? {
