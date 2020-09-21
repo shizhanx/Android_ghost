@@ -73,6 +73,14 @@ class GhostActivity : AppCompatActivity() {
         }
     }
 
+    fun onChallenge(view: View?) {
+        userTurn = false
+        val word = text!!.text.toString()
+        if (dictionary!!.isWord(word)) label!!.text = "This is a word. You Lose"
+        else if (dictionary!!.getAnyWordStartingWith(word) == null) label!!.text = "No such word. You WIN"
+        else label!!.text = "There is such a word. You Lose"
+    }
+
     private fun computerTurn() {
         val word = text!!.text.toString()
         if (dictionary!!.isWord(word)) {

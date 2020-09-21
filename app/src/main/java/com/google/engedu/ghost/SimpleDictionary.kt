@@ -32,7 +32,7 @@ class SimpleDictionary(wordListStream: InputStream?) : GhostDictionary {
         while (l < r) {
             val m = l + (r - l) / 2
             with(words[m]) {
-                if (this.contains(prefix)) return this
+                if (this.substring(0, prefix.length) == prefix) return this
                 if (this < prefix) l = m + 1
                 else r = m - 1
             }
