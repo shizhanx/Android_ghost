@@ -29,13 +29,15 @@ class GhostActivity : AppCompatActivity() {
     private var dictionary: GhostDictionary? = null
     private var userTurn = false
     private val random = Random()
-    private val text = findViewById<TextView>(R.id.ghostText)
-    private val label = findViewById<TextView>(R.id.gameStatus)
+    private var text: TextView? = null
+    private var label: TextView? =null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ghost)
         val assetManager = assets
         dictionary = SimpleDictionary(assetManager.open("words.txt"))
+        text = findViewById(R.id.ghostText)
+        label = findViewById(R.id.gameStatus)
         onStart(null)
     }
 
@@ -62,27 +64,27 @@ class GhostActivity : AppCompatActivity() {
      */
     fun onStart(view: View?) {
         userTurn = random.nextBoolean()
-        text.text = ""
+        text!!.text = ""
         if (userTurn) {
-            label.text = USER_TURN
+            label!!.text = USER_TURN
         } else {
-            label.text = COMPUTER_TURN
+            label!!.text = COMPUTER_TURN
             computerTurn()
         }
     }
 
     private fun computerTurn() {
-        val word = text.text.toString()
+        val word = text!!.text.toString()
         if (dictionary!!.isWord(word)) {
-            label.text = "This is a word. You Lose"
+            label!!.text = "This is a word. You Lose"
         } else {
             val fullWord = dictionary!!.getAnyWordStartingWith(word)
             if (fullWord == null)
-                label.text = "No such word. You Lose"
+                label!!.text = "No such word. You Lose"
             else {
-                text.text = fullWord.substring(0, word.length+1)
+                text!!.text = fullWord.substring(0, word.length + 1)
                 userTurn = true
-                label.text = USER_TURN
+                label!!.text = USER_TURN
             }
         }
     }
@@ -94,9 +96,9 @@ class GhostActivity : AppCompatActivity() {
      * @return whether the key stroke was handled.
      */
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        val word = text.text.toString()
+        val word = text!!.text.toString()
         return if (event.unicodeChar in 97..122 && userTurn) {
-            text.text = word + event.unicodeChar.toChar()
+            text!!.text = word + event.unicodeChar.toChar()
 //            Log.d("sb", word)
             findViewById<TextView>(R.id.gameStatus).text = COMPUTER_TURN
             computerTurn()

@@ -27,6 +27,16 @@ class SimpleDictionary(wordListStream: InputStream?) : GhostDictionary {
     }
 
     override fun getAnyWordStartingWith(prefix: String): String? {
+        var l = 0
+        var r = words.size - 1
+        while (l < r) {
+            val m = l + (r - l) / 2
+            with(words[m]) {
+                if (this.contains(prefix)) return this
+                if (this < prefix) l = m + 1
+                else r = m - 1
+            }
+        }
         return null
     }
 
