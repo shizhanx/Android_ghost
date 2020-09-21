@@ -19,6 +19,7 @@ import java.io.BufferedReader
 import java.io.InputStream
 import java.io.InputStreamReader
 import java.util.*
+import kotlin.random.Random
 
 class SimpleDictionary(wordListStream: InputStream?) : GhostDictionary {
     private val words: MutableList<String>
@@ -32,7 +33,7 @@ class SimpleDictionary(wordListStream: InputStream?) : GhostDictionary {
         while (l < r) {
             val m = l + (r - l) / 2
             with(words[m]) {
-                if (this.substring(0, prefix.length) == prefix) return this
+                if (this.length > prefix.length && this.substring(0, prefix.length) == prefix) return this
                 if (this < prefix) l = m + 1
                 else r = m - 1
             }
@@ -41,6 +42,25 @@ class SimpleDictionary(wordListStream: InputStream?) : GhostDictionary {
     }
 
     override fun getGoodWordStartingWith(prefix: String): String? {
+        if (prefix == "") return words.random()
+        getAnyWordStartingWith(prefix)?.let {
+            val index = words.indexOf(it)
+            val goodWords = mutableListOf<String>()
+            for (i in index until words.size) {
+                if (words[i].length>prefix.length && words[i].substring(0, prefix.length) != prefix)
+                    break
+                if (words[i].length>prefix.length && (words[i].length - prefix.length) % 2 == 0)
+                    goodWords.add(words[i])
+            }
+            for (i in index - 1 downTo 0) {
+                if (words[i].length>prefix.length && words[i].substring(0, prefix.length) != prefix)
+                    break
+                if (words[i].length>prefix.length && (words[i].length - prefix.length) % 2 == 0)
+                    goodWords.add(words[i])
+            }
+            if (goodWords.isEmpty()) return it
+            return goodWords.random()
+        }
         return null
     }
 

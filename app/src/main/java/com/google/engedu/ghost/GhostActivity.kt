@@ -74,11 +74,13 @@ class GhostActivity : AppCompatActivity() {
     }
 
     fun onChallenge(view: View?) {
-        userTurn = false
-        val word = text!!.text.toString()
-        if (dictionary!!.isWord(word)) label!!.text = "This is a word. You Lose"
-        else if (dictionary!!.getAnyWordStartingWith(word) == null) label!!.text = "No such word. You WIN"
-        else label!!.text = "There is such a word. You Lose"
+        if (userTurn) {
+            userTurn = false
+            val word = text!!.text.toString()
+            if (dictionary!!.isWord(word)) label!!.text = "This is a word. You WIN"
+            else if (dictionary!!.getAnyWordStartingWith(word) == null) label!!.text = "No such word. You WIN"
+            else label!!.text = "There is such a word. You Lose"
+        }
     }
 
     private fun computerTurn() {
@@ -86,7 +88,7 @@ class GhostActivity : AppCompatActivity() {
         if (dictionary!!.isWord(word)) {
             label!!.text = "This is a word. You Lose"
         } else {
-            val fullWord = dictionary!!.getAnyWordStartingWith(word)
+            val fullWord = dictionary!!.getGoodWordStartingWith(word)
             if (fullWord == null)
                 label!!.text = "No such word. You Lose"
             else {
@@ -109,6 +111,7 @@ class GhostActivity : AppCompatActivity() {
             text!!.text = word + event.unicodeChar.toChar()
 //            Log.d("sb", word)
             findViewById<TextView>(R.id.gameStatus).text = COMPUTER_TURN
+            userTurn = false
             computerTurn()
             true
         } else super.onKeyUp(keyCode, event)
