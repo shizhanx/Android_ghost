@@ -21,7 +21,7 @@ import java.io.InputStreamReader
 import java.util.*
 
 class SimpleDictionary(wordListStream: InputStream?) : GhostDictionary {
-    private val words: MutableList<String?>
+    private val words: MutableList<String>
     override fun isWord(word: String): Boolean {
         return words.contains(word)
     }

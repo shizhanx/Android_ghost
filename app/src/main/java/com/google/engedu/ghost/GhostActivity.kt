@@ -29,7 +29,8 @@ class GhostActivity : AppCompatActivity() {
     private var dictionary: GhostDictionary? = null
     private var userTurn = false
     private val random = Random()
-    private var word: String = ""
+    private val text = findViewById<TextView>(R.id.ghostText)
+    private val label = findViewById<TextView>(R.id.gameStatus)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ghost)
@@ -60,11 +61,8 @@ class GhostActivity : AppCompatActivity() {
      * @param view
      */
     fun onStart(view: View?) {
-        word = ""
         userTurn = random.nextBoolean()
-        val text = findViewById<View>(R.id.ghostText) as TextView
         text.text = ""
-        val label = findViewById<View>(R.id.gameStatus) as TextView
         if (userTurn) {
             label.text = USER_TURN
         } else {
@@ -74,10 +72,19 @@ class GhostActivity : AppCompatActivity() {
     }
 
     private fun computerTurn() {
-        val label = findViewById<View>(R.id.gameStatus) as TextView
-        // Do computer turn stuff then make it the user's turn again
-        userTurn = true
-        label.text = USER_TURN
+        val word = text.text.toString()
+        if (dictionary!!.isWord(word)) {
+            label.text = "This is a word. You Lose"
+        } else {
+            val fullWord = dictionary!!.getAnyWordStartingWith(word)
+            if (fullWord == null)
+                label.text = "No such word. You Lose"
+            else {
+                text.text = fullWord.substring(0, word.length+1)
+                userTurn = true
+                label.text = USER_TURN
+            }
+        }
     }
 
     /**
@@ -87,10 +94,12 @@ class GhostActivity : AppCompatActivity() {
      * @return whether the key stroke was handled.
      */
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
-        return if(event.unicodeChar in 97..122) {
-            word += event.unicodeChar.toChar()
+        val word = text.text.toString()
+        return if (event.unicodeChar in 97..122 && userTurn) {
+            text.text = word + event.unicodeChar.toChar()
 //            Log.d("sb", word)
-            findViewById<TextView>(R.id.gameStatus).text = dictionary!!.isWord(word).toString()
+            findViewById<TextView>(R.id.gameStatus).text = COMPUTER_TURN
+            computerTurn()
             true
         } else super.onKeyUp(keyCode, event)
     }
