@@ -35,7 +35,7 @@ class TrieNode {
 
     fun getAnyWordStartingWith(s: String): String? {
         if (s.isNotEmpty()) {
-            if (children.containsKey(s[0])){
+            if (children.containsKey(s[0])) {
                 children.getValue(s[0]).getAnyWordStartingWith(s.substring(1)).apply {
                     return if (this == null) null else s[0] + this
                 }
@@ -46,7 +46,21 @@ class TrieNode {
     }
 
     fun getGoodWordStartingWith(s: String): String? {
-        return null
+        if (s.isNotEmpty()) {
+            if (children.containsKey(s[0])) {
+                children.getValue(s[0]).getAnyWordStartingWith(s.substring(1)).apply {
+                    return if (this == null) null else s[0] + this
+                }
+            } else return null
+        } else {
+            return if (children.isEmpty()) null else {
+                val possibilities = mutableSetOf<Char>()
+                for (pair in children) {
+                    if (!pair.value.isWord) possibilities.add(pair.key)
+                }
+                if (possibilities.isEmpty()) children.keys.random().toString() else possibilities.random().toString()
+            }
+        }
     }
 
 }
